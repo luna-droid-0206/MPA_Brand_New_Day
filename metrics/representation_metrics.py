@@ -64,8 +64,14 @@ def compute_clustering_metrics(labels_true, labels_pred, embeddings=None):
     }
 
     if embeddings is not None:
-        sil = silhouette_score(embeddings, labels_pred)
-        result["silhouette_score"] = sil
+        # Silhouette score requires at least 2 distinct clusters
+        n_unique_clusters = len(np.unique(labels_pred))
+        if n_unique_clusters >= 2:
+            sil = silhouette_score(embeddings, labels_pred)
+            result["silhouette_score"] = sil
+        else:
+            result["silhouette_score"] = None
+            result["warning"] = f"Only {n_unique_clusters} cluster(s) found; silhouette_score requires at least 2 clusters"
 
     return result
 
