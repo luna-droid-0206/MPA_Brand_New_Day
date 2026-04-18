@@ -122,7 +122,9 @@ def run_clustering_eval(embeddings_dir, results_dir, config):
         test_labels, cluster_labels, test_emb_scaled
     )
 
-    print(f"  Silhouette Score:    {cluster_metrics['silhouette_score']:.4f}")
+    sil_score = cluster_metrics['silhouette_score']
+    sil_str = f"{sil_score:.4f}" if sil_score is not None else "N/A (only 1 cluster found)"
+    print(f"  Silhouette Score:    {sil_str}")
     print(f"  Adjusted Rand Index: {cluster_metrics['adjusted_rand_index']:.4f}")
 
     results["pretrained"] = cluster_metrics
@@ -142,7 +144,9 @@ def run_clustering_eval(embeddings_dir, results_dir, config):
         test_labels, random_cluster_labels, random_test_emb_scaled
     )
 
-    print(f"  Silhouette Score:    {random_cluster_metrics['silhouette_score']:.4f}")
+    sil_score_random = random_cluster_metrics['silhouette_score']
+    sil_str_random = f"{sil_score_random:.4f}" if sil_score_random is not None else "N/A (only 1 cluster found)"
+    print(f"  Silhouette Score:    {sil_str_random}")
     print(f"  Adjusted Rand Index: {random_cluster_metrics['adjusted_rand_index']:.4f}")
 
     results["random"] = random_cluster_metrics
