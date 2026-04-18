@@ -1,0 +1,68 @@
+# ============================================================
+# Self-Supervised Image Colorization — Configuration
+# ============================================================
+
+# ── Dataset ──
+dataset:
+  name: STL10
+  data_dir: ./data
+  image_size: 96           # Final training resolution (use 64 for quick iteration)
+  num_workers: 4
+
+# ── Pretraining ──
+pretraining:
+  epochs: 100
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine         # Cosine annealing
+  grad_clip_max_norm: 1.0
+  checkpoint_every: 10      # Save checkpoint every N epochs
+  visualize_every: 5        # Visualize colorization samples every N epochs
+  checkpoint_dir: ./checkpoints
+  log_dir: ./logs
+
+# ── Model ──
+model:
+  encoder_backbone: resnet18
+  encoder_pretrained: false  # No ImageNet pretrained weights — learn from scratch
+  input_channels: 1          # L channel only
+  decoder_output_channels: 2 # a and b channels
+  embedding_dim: 512         # Encoder output dimensionality after GAP
+
+# ── Evaluation ──
+evaluation:
+  # Classification
+  classification:
+    standardize: true
+    linear_probe: true
+    mlp_probe: true
+    mlp_hidden_dim: 256
+    mlp_epochs: 50
+    mlp_lr: 0.001
+
+  # Clustering
+  clustering:
+    k: 10                    # Number of clusters (matches STL-10 class count)
+    n_init: 10               # Number of random restarts
+    standardize: true
+
+  # t-SNE
+  tsne:
+    n_samples: 3000          # Number of samples for visualization
+    perplexity: 30
+    random_state: 42
+
+  # Retrieval
+  retrieval:
+    top_k: 9                 # Top-K most similar images
+    l2_normalize: true
+
+# ── Streamlit App ──
+app:
+  title: "Self-Supervised Colorization Explorer"
+  host: localhost
+  port: 8501
+
+# ── Random seeds ──
+seed: 42
